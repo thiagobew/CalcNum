@@ -2,14 +2,13 @@ def birgeVerta(a: list, x: float):
     n = len(a)
     b = [None] * n
     b[0] = a[0]
-    c = [None] * n
+    c = [None] * (n - 1)
     c[0] = b[0]
 
     for i in range(1, n - 1):
         b[i] = a[i] + b[i-1] * x
         c[i] = b[i] + c[i-1] * x
     b[n - 1] = b[n - 2] * x + a[n - 1]
-    c[n - 1] = b[n - 2] * n + b[n - 1]
 
     r = b[-1]
     r1 = c[-1]
@@ -27,7 +26,7 @@ def compute(a: list, x: float):
 
 def raizes(a: list):
     x = 1
-    erro = 1e-5
+    erro = 1e-16
     k = 0
 
     while abs(compute(a, x)) > erro:
