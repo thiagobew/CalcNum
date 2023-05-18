@@ -50,12 +50,12 @@ def lagrange(x, y, xx):
                 
     return px
 
-def generate_points_lagrange(x, y, n):
+def generate_points(x, y, n, func=lagrange):
     new = []
     
     for i in range(n):
         new_x = random.uniform(min(x), max(x))
-        new_y = lagrange(x, y, new_x)
+        new_y = func(x, y, new_x)
         new.append((new_x, new_y))
     
     new.sort(key=lambda x: x[0])
@@ -68,18 +68,40 @@ def plot_lagrange(x_real, y_real, x_lagrange, y_lagrange):
     plt.plot(x_lagrange, y_lagrange, color='blue')
     plt.show()
 
+def newton_divide_differences(x: list, y: list, xx: float):
+    n = len(x)
+    A = [[None for i in range(n)] for j in range(n)]
+    for i in range(n):
+        A[i][0] = y[i]
+    
+    for j in range(1, n):
+        for i in range(j, n):
+            A[i][j] = (A[i][j-1] - A[i-1][j-1]) / (x[i] - x[i-j])
+        
+    p = 0
+    for i in range(n):
+        prod = 1
+        for j in range(i):
+            prod *= xx - x[j]
+        
+        p += A[i][i] * prod
+    
+    return p
+
 def main():
-    x = [-1, 0, 1]
-    y = [4, 1, -1]
+    x = [0, 1, 2, 3]
+    y = [1, 6, 5, -8]
     
     #x = [random.uniform(0, 100) for i in range(20)]
     #y = [random.uniform(0, 100) for i in range(20)]
     
     #res, nterms = interpolate(x, y)
-    x_la, y_la = generate_points_lagrange(x, y, 100)
+    #x_la, y_la = generate_points_lagrange(x, y, 100)
 
+    x_plot, y_plot = generate_points(x, y, 1000, newton_divide_differences)
+    
     #plot(x, y, res)
-    plot_lagrange(x, y, x_la, y_la)
+    plot_lagrange(x, y, x_plot, y_plot)
 
 if __name__ == '__main__':
     main()
